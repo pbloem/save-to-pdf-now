@@ -71,11 +71,12 @@ browser.storage.onChanged.addListener((changes, areaName) => {
 
 // Listen for button click and show popup
 browser.browserAction.onClicked.addListener((currTab, clickData) => {
+
 	// Check for Shift key to modify preferences
 	if (oPDFPrefs.shiftToPrint == true){
 		if (clickData.modifiers.includes('Shift')){
 			// Make the PDF
-			makePDF();
+			makePDF(currTab.title);
 		} else {
 			// Open popup
 			browser.browserAction.setPopup({popup: browser.runtime.getURL('save-to-pdf-now-popup.html')})
@@ -90,12 +91,13 @@ browser.browserAction.onClicked.addListener((currTab, clickData) => {
 			.then(browser.browserAction.setPopup({popup: ''}));
 		} else {
 			// Make the PDF
-			makePDF();
+			makePDF(currTab.title);
 		}
 	}
 });
 
-function makePDF() {
+function makePDF(title) {
+
 	// Make that PDF
 	if (oPDFPrefs.override == false){
 		// Do not send custom settings
@@ -156,6 +158,10 @@ function makePDF() {
 		if (oPDFPrefs.footerRightOverride == true){
 			pageSettings.footerRight = oPDFPrefs.footerRightText;
 		}
+
+		pageSettings.toFileName = title + '.pdf';
+		console.log(pageSettings);
+
 		// We're ready to go!
 		browser.tabs.saveAsPDF(pageSettings);
 	}

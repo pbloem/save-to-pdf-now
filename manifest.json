@@ -29,7 +29,8 @@
 	},
 	"permissions": [
 		"menus",
-		"storage"
+		"storage",
+		"tabs"
 	],
 	"icons": {
 		"256": "icons/save-pdf-256-light.png"

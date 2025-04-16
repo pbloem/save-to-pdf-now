@@ -153,6 +153,7 @@ updtPrefs.then(() => {
 
 // Button functions
 function saveAsPDF(evt){
+
 	// Update PDF prefs and keep track of changes for potential saving to storage
 	var frm = evt.target.form;
 	var changed = false;
@@ -442,9 +443,21 @@ function saveAsPDF(evt){
 		if (oPDFPrefs.footerRightOverride == true){
 			pageSettings.footerRight = oPDFPrefs.footerRightText;
 		}
-		// We're ready to go!
-		console.log(pageSettings);				
-		browser.tabs.saveAsPDF(pageSettings);
+
+        title = 'untitled'
+        browser.tabs.query({currentWindow: true, active:true})
+            .then(tabs => {
+                title += tabs[0].title;
+                console.log('title', tabs[0].title);
+
+                pageSettings.toFileName = title + '.pdf';
+
+                // We're ready to go!
+                console.log(pageSettings);
+
+                browser.tabs.saveAsPDF(pageSettings);
+        });
+
 	}
 }
 document.getElementById('btnSaveGo').addEventListener('click', saveAsPDF, false);
